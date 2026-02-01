@@ -108,9 +108,54 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 | Service            | ClusterIP, NodePort, LoadBalancer: internal routing |
 | Pod                | Actual containerized app                            |
 
-**Typical Questions:**
 
-1. Difference between Ingress and Ingress Controller?
-2. Why Traefik is preferred in K3s?
-3. How to expose multiple apps on same domain using paths?
-4. Nginx outside K8s vs Nginx Ingress Controller?
+
+
+
+
+
+## Typical Interview Questions & Answers
+
+**1. Difference between Ingress and Ingress Controller?**
+
+* **Ingress:** Kubernetes object/resource that defines rules for routing external HTTP/HTTPS traffic to internal services.
+* **Ingress Controller:** The actual pod/software that implements the Ingress rules and routes the traffic accordingly. Without the controller, Ingress rules do nothing.
+
+**2. Why Traefik is preferred in K3s?**
+
+* Lightweight and dynamic, ideal for resource-constrained clusters.
+* Automatically detects Kubernetes services.
+* Provides automatic HTTPS with Let's Encrypt.
+* Dashboard & metrics built-in.
+
+**3. How to expose multiple apps on same domain using paths?**
+
+* Use **path-based routing** in Ingress rules.
+* Example:
+
+  ```yaml
+  rules:
+    - host: myapp.local
+      http:
+        paths:
+        - path: /api
+          pathType: Prefix
+          backend:
+            service:
+              name: api-service
+              port:
+                number: 80
+        - path: /web
+          pathType: Prefix
+          backend:
+            service:
+              name: web-service
+              port:
+                number: 80
+  ```
+* `/api` goes to `api-service`, `/web` goes to `web-service`.
+
+**4. Nginx outside K8s vs Nginx Ingress Controller?**
+
+* **Nginx outside K8s:** Standard web server or reverse proxy, manually configured, serves traffic to apps on VMs or containers.
+* **Nginx Ingress Controller:** Runs inside Kubernetes, dynamically routes traffic based on Ingress rules, manages multiple services automatically, and integrates with K8s objects.
